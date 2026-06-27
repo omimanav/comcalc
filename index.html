@@ -7,26 +7,48 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ── LIGHT THEME (default) ── */
   :root {
     --bg: #E4E8EF;
     --surface: #E4E8EF;
     --shadow-light: #FFFFFF;
     --shadow-dark: #B8BEC9;
     --accent: #5B7FA6;
-    --accent-glow: rgba(91, 127, 166, 0.18);
-    --accent-light: #7BA3CC;
+    --accent-glow: rgba(91, 127, 166, 0.15);
     --text-primary: #3A4A5C;
     --text-secondary: #6B7A8E;
     --text-muted: #9AA3AE;
     --success: #4A8C6E;
-    --success-bg: rgba(74, 140, 110, 0.1);
     --danger: #B85C5C;
-    --radius-sm: 12px;
-    --radius-md: 18px;
-    --radius-lg: 24px;
+    --spiv-accent: #8A6BAC;
+    --spiv-glow: rgba(138, 107, 172, 0.15);
+    --divider: rgba(0,0,0,0.06);
     --neu-raised: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
     --neu-inset: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
     --neu-raised-sm: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+  }
+
+  /* ── DARK THEME ── */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1E2229;
+      --surface: #1E2229;
+      --shadow-light: #272D37;
+      --shadow-dark: #141820;
+      --accent: #6D9ECF;
+      --accent-glow: rgba(109, 158, 207, 0.15);
+      --text-primary: #D0D8E4;
+      --text-secondary: #8A97A8;
+      --text-muted: #566070;
+      --success: #5BAE88;
+      --danger: #D07070;
+      --spiv-accent: #A88ACA;
+      --spiv-glow: rgba(168, 138, 202, 0.15);
+      --divider: rgba(255,255,255,0.05);
+      --neu-raised: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
+      --neu-inset: inset 4px 4px 9px var(--shadow-dark), inset -4px -4px 9px var(--shadow-light);
+      --neu-raised-sm: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+    }
   }
 
   html, body {
@@ -34,6 +56,7 @@
     background: var(--bg);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
     color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
   body {
@@ -48,7 +71,7 @@
     padding: 0 20px;
   }
 
-  /* Header */
+  /* ── HEADER ── */
   .header {
     padding: 48px 0 28px;
     text-align: center;
@@ -81,7 +104,7 @@
     letter-spacing: 0.2px;
   }
 
-  /* Section label */
+  /* ── SECTION LABEL ── */
   .section-label {
     font-size: 11px;
     font-weight: 700;
@@ -91,20 +114,17 @@
     margin: 24px 0 12px 4px;
   }
 
-  /* Card */
+  /* ── CARD ── */
   .card {
     background: var(--surface);
-    border-radius: var(--radius-lg);
+    border-radius: 24px;
     box-shadow: var(--neu-raised);
     padding: 20px;
     margin-bottom: 16px;
   }
 
-  /* Input group */
-  .input-group {
-    margin-bottom: 16px;
-  }
-
+  /* ── INPUT GROUP ── */
+  .input-group { margin-bottom: 16px; }
   .input-group:last-child { margin-bottom: 0; }
 
   .input-label {
@@ -144,15 +164,15 @@
     z-index: 1;
   }
 
-  input[type="number"] {
+  input[type="number"], input[type="text"] {
     width: 100%;
-    padding: 14px 40px 14px 16px;
+    padding: 14px 16px;
     font-size: 17px;
     font-weight: 500;
     color: var(--text-primary);
     background: var(--surface);
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: 18px;
     box-shadow: var(--neu-inset);
     outline: none;
     -webkit-appearance: none;
@@ -160,7 +180,7 @@
     transition: box-shadow 0.2s ease;
   }
 
-  input[type="number"]:focus {
+  input[type="number"]:focus, input[type="text"]:focus {
     box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light), 0 0 0 2px var(--accent);
   }
 
@@ -170,28 +190,71 @@
   input.has-prefix { padding-left: 28px; }
   input.has-suffix { padding-right: 32px; }
 
-  /* Services rows */
-  .services-list {
+  /* ── MULTI-ROW (services / spivs) ── */
+  .multi-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
-  .service-row {
+  .multi-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
-  .service-row .input-wrap {
-    flex: 1;
-  }
+  .multi-row .input-wrap { flex: 1; }
 
-  .service-row input[type="number"] {
+  .multi-row input[type="number"],
+  .multi-row input[type="text"] {
     padding: 12px 32px 12px 28px;
     font-size: 15px;
   }
 
+  .multi-row input[type="text"] {
+    padding: 12px 12px 12px 12px;
+    font-size: 14px;
+  }
+
+  /* SPIV row layout: label + amount side by side */
+  .spiv-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .spiv-row .spiv-label-wrap {
+    flex: 1.2;
+    position: relative;
+  }
+
+  .spiv-row .spiv-amount-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .spiv-row input[type="text"] {
+    width: 100%;
+    padding: 12px 10px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+
+  .spiv-row input[type="number"] {
+    width: 100%;
+    padding: 12px 10px 12px 24px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+
+  .spiv-row .input-prefix {
+    left: 10px;
+    font-size: 13px;
+  }
+
+  /* ── REMOVE BUTTON ── */
   .remove-btn {
     width: 36px;
     height: 36px;
@@ -200,7 +263,7 @@
     background: var(--surface);
     box-shadow: var(--neu-raised-sm);
     color: var(--danger);
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 300;
     cursor: pointer;
     display: flex;
@@ -209,19 +272,18 @@
     transition: box-shadow 0.15s ease;
     flex-shrink: 0;
     line-height: 1;
+    padding-bottom: 1px;
   }
 
-  .remove-btn:active {
-    box-shadow: var(--neu-inset);
-  }
+  .remove-btn:active { box-shadow: var(--neu-inset); }
 
-  /* Add button */
+  /* ── ADD BUTTON ── */
   .add-btn {
     width: 100%;
     padding: 13px;
     border: none;
     background: var(--surface);
-    border-radius: var(--radius-md);
+    border-radius: 18px;
     box-shadow: var(--neu-raised-sm);
     color: var(--accent);
     font-size: 14px;
@@ -231,23 +293,18 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    transition: box-shadow 0.15s ease, color 0.15s ease;
+    transition: box-shadow 0.15s ease;
     margin-top: 12px;
   }
 
-  .add-btn:active {
-    box-shadow: var(--neu-inset);
-  }
+  .add-btn.spiv-add { color: var(--spiv-accent); }
+  .add-btn:active { box-shadow: var(--neu-inset); }
+  .add-btn svg { width: 16px; height: 16px; }
 
-  .add-btn svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  /* Commission rate badge */
+  /* ── RATE DISPLAY ── */
   .rate-display {
     background: var(--surface);
-    border-radius: var(--radius-md);
+    border-radius: 18px;
     box-shadow: var(--neu-inset);
     padding: 14px 16px;
     display: flex;
@@ -280,17 +337,12 @@
     color: var(--accent);
   }
 
-  /* Results */
+  /* ── RESULTS ── */
   .results-card {
     background: var(--surface);
-    border-radius: var(--radius-lg);
+    border-radius: 24px;
     box-shadow: var(--neu-raised);
     padding: 20px;
-    margin-bottom: 16px;
-  }
-
-  .results-card .section-label {
-    margin-top: 0;
     margin-bottom: 16px;
   }
 
@@ -298,8 +350,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 11px 0;
+    border-bottom: 1px solid var(--divider);
   }
 
   .result-row:last-child { border-bottom: none; padding-bottom: 0; }
@@ -315,30 +367,36 @@
   }
 
   .result-value {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--text-primary);
     text-align: right;
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
 
   .result-value.accent { color: var(--accent); }
   .result-value.success { color: var(--success); }
+  .result-value.spiv { color: var(--spiv-accent); }
 
-  .result-divider {
-    height: 1px;
-    background: var(--shadow-dark);
-    margin: 4px 0;
-    opacity: 0.3;
+  /* section mini-divider inside results */
+  .result-section-head {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 14px 0 4px;
+    border-bottom: 1px solid var(--divider);
   }
 
-  /* Total row */
+  /* ── TOTAL ROW ── */
   .total-row {
     background: var(--surface);
-    border-radius: var(--radius-md);
+    border-radius: 18px;
     box-shadow: var(--neu-inset);
     padding: 16px;
-    margin-top: 12px;
+    margin-top: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -357,12 +415,13 @@
     font-weight: 800;
     color: var(--success);
     letter-spacing: -1px;
+    font-variant-numeric: tabular-nums;
   }
 
-  /* Tier table */
+  /* ── TIER TABLE ── */
   .tier-table-card {
     background: var(--surface);
-    border-radius: var(--radius-lg);
+    border-radius: 24px;
     box-shadow: var(--neu-raised);
     padding: 20px;
     margin-bottom: 16px;
@@ -389,7 +448,7 @@
     font-size: 12px;
     color: var(--text-secondary);
     padding: 8px 0;
-    border-top: 1px solid rgba(0,0,0,0.05);
+    border-top: 1px solid var(--divider);
   }
 
   .tier-table td:not(:first-child) {
@@ -413,21 +472,7 @@
     vertical-align: middle;
   }
 
-  /* Empty state */
-  .empty-state {
-    text-align: center;
-    padding: 28px 0 12px;
-    color: var(--text-muted);
-    font-size: 13px;
-  }
-
-  .empty-state .empty-icon {
-    font-size: 32px;
-    margin-bottom: 8px;
-    opacity: 0.5;
-  }
-
-  /* Accordion toggle */
+  /* ── ACCORDION ── */
   .tier-toggle {
     display: flex;
     align-items: center;
@@ -451,18 +496,58 @@
     margin-top: 0;
   }
 
-  .tier-table-wrap.open {
-    max-height: 300px;
-    margin-top: 14px;
-  }
+  .tier-table-wrap.open { max-height: 300px; margin-top: 14px; }
 
-  /* Placeholder text */
+  /* ── PLACEHOLDER ── */
   .placeholder-result {
     text-align: center;
     padding: 24px 0;
     color: var(--text-muted);
     font-size: 13px;
   }
+
+  /* ── SPIV CHIP in results ── */
+  .spiv-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .spiv-item-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    flex: 1;
+    padding-right: 10px;
+    font-style: italic;
+  }
+
+  .spiv-item-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--spiv-accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* column header labels inside spiv card */
+  .spiv-col-heads {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding: 0 2px;
+  }
+
+  .spiv-col-heads span {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .spiv-col-heads .lbl { flex: 1.2; }
+  .spiv-col-heads .amt { flex: 1; }
 </style>
 </head>
 <body>
@@ -471,10 +556,10 @@
   <div class="header">
     <div class="header-icon">💼</div>
     <h1>Commission Calculator</h1>
-    <p>Sales &amp; Services Commission</p>
+    <p>Sales, Services &amp; SPIVs</p>
   </div>
 
-  <!-- SFM Input -->
+  <!-- SFM -->
   <p class="section-label">SFM Percentage</p>
   <div class="card">
     <div class="input-group">
@@ -500,16 +585,16 @@
       <label class="input-label">Total Invoice Value (excl. GST)</label>
       <div class="input-wrap">
         <span class="input-prefix">$</span>
-        <input type="number" id="totalSale" class="has-prefix has-suffix" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
+        <input type="number" id="totalSale" class="has-prefix" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
       </div>
     </div>
   </div>
 
-  <!-- Services Inputs -->
+  <!-- Services SKU Values -->
   <p class="section-label">Services SKU Values</p>
   <div class="card">
-    <div class="services-list" id="servicesList">
-      <div class="service-row" data-index="0">
+    <div class="multi-list" id="servicesList">
+      <div class="multi-row">
         <div class="input-wrap">
           <span class="input-prefix">$</span>
           <input type="number" class="service-input has-prefix" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
@@ -524,6 +609,32 @@
     </button>
   </div>
 
+  <!-- SPIVs -->
+  <p class="section-label">SPIVs</p>
+  <div class="card">
+    <div class="spiv-col-heads">
+      <span class="lbl">Description</span>
+      <span class="amt">Amount</span>
+    </div>
+    <div class="multi-list" id="spivList">
+      <div class="spiv-row">
+        <div class="spiv-label-wrap">
+          <input type="text" class="spiv-desc" placeholder="e.g. Product bonus" oninput="calculate()">
+        </div>
+        <div class="spiv-amount-wrap">
+          <span class="input-prefix">$</span>
+          <input type="number" class="spiv-amount" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
+        </div>
+      </div>
+    </div>
+    <button class="add-btn spiv-add" onclick="addSpiv()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
+      </svg>
+      Add Another SPIV
+    </button>
+  </div>
+
   <!-- Results -->
   <p class="section-label">Commission Breakdown</p>
   <div class="results-card" id="resultsCard">
@@ -532,30 +643,48 @@
       Enter values above to calculate commission
     </div>
     <div id="resultsContent" style="display:none">
+
+      <!-- Invoice section -->
+      <div class="result-section-head">Invoice</div>
       <div class="result-row">
         <div class="result-label">Total Invoice Value</div>
         <div class="result-value" id="r-totalSale">—</div>
       </div>
       <div class="result-row">
-        <div class="result-label">Invoice Commission Rate</div>
+        <div class="result-label">Commission Rate</div>
         <div class="result-value accent" id="r-invRate">—</div>
       </div>
       <div class="result-row">
         <div class="result-label">Invoice Commission</div>
         <div class="result-value accent" id="r-invComm">—</div>
       </div>
+
+      <!-- Services section -->
+      <div class="result-section-head">Services</div>
       <div class="result-row">
-        <div class="result-label">Total Services SKU Value</div>
+        <div class="result-label">Total SKU Value</div>
         <div class="result-value" id="r-totalServices">—</div>
       </div>
       <div class="result-row">
-        <div class="result-label">Services Commission Rate</div>
+        <div class="result-label">Services Rate (fixed)</div>
         <div class="result-value" id="r-svcRate">6.00%</div>
       </div>
       <div class="result-row">
         <div class="result-label">Services Commission</div>
         <div class="result-value success" id="r-svcComm">—</div>
       </div>
+
+      <!-- SPIVs section -->
+      <div id="spivResultSection" style="display:none">
+        <div class="result-section-head">SPIVs</div>
+        <div id="spivResultItems"></div>
+        <div class="result-row">
+          <div class="result-label">Total SPIVs</div>
+          <div class="result-value spiv" id="r-spivTotal">—</div>
+        </div>
+      </div>
+
+      <!-- Grand total -->
       <div class="total-row">
         <div class="total-label">Total Commission</div>
         <div class="total-value" id="r-total">—</div>
@@ -590,15 +719,15 @@
     </div>
   </div>
 
-</div>
+</div><!-- /app -->
 
 <script>
   const TIERS = [
-    { max: 5,    rate: 0.10, label: '≤5%' },
-    { max: 7.99, rate: 0.25, label: '5–7.99%' },
-    { max: 11.99, rate: 0.35, label: '8–11.99%' },
-    { max: 17.99, rate: 0.55, label: '12–17.99%' },
-    { max: Infinity, rate: 1.00, label: '≥18%' },
+    { max: 5,        rate: 0.10, label: '≤5%'       },
+    { max: 7.99,     rate: 0.25, label: '5–7.99%'   },
+    { max: 11.99,    rate: 0.35, label: '8–11.99%'  },
+    { max: 17.99,    rate: 0.55, label: '12–17.99%' },
+    { max: Infinity, rate: 1.00, label: '≥18%'      },
   ];
   const SERVICES_RATE = 6.0;
 
@@ -613,32 +742,47 @@
     return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  function fmtPct(n) {
-    return n.toFixed(2) + '%';
-  }
+  function fmtPct(n) { return n.toFixed(2) + '%'; }
 
-  let serviceCount = 1;
-
+  // ── Service SKU rows ──
   function addService() {
     const list = document.getElementById('servicesList');
-    const idx = serviceCount++;
     const row = document.createElement('div');
-    row.className = 'service-row';
-    row.dataset.index = idx;
+    row.className = 'multi-row';
     row.innerHTML = `
       <div class="input-wrap">
         <span class="input-prefix">$</span>
         <input type="number" class="service-input has-prefix" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
       </div>
-      <button class="remove-btn" onclick="removeService(this)" title="Remove">−</button>
+      <button class="remove-btn" onclick="removeRow(this)" title="Remove">−</button>
     `;
     list.appendChild(row);
     row.querySelector('input').focus();
     calculate();
   }
 
-  function removeService(btn) {
-    btn.closest('.service-row').remove();
+  // ── SPIV rows ──
+  function addSpiv() {
+    const list = document.getElementById('spivList');
+    const row = document.createElement('div');
+    row.className = 'spiv-row';
+    row.innerHTML = `
+      <div class="spiv-label-wrap">
+        <input type="text" class="spiv-desc" placeholder="e.g. Product bonus" oninput="calculate()">
+      </div>
+      <div class="spiv-amount-wrap">
+        <span class="input-prefix">$</span>
+        <input type="number" class="spiv-amount" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
+      </div>
+      <button class="remove-btn" onclick="removeRow(this)" title="Remove">−</button>
+    `;
+    list.appendChild(row);
+    row.querySelector('input').focus();
+    calculate();
+  }
+
+  function removeRow(btn) {
+    btn.closest('.multi-row, .spiv-row').remove();
     calculate();
   }
 
@@ -666,11 +810,10 @@
   }
 
   function calculate() {
-    const sfmVal = parseFloat(document.getElementById('sfm').value);
+    const sfmVal       = parseFloat(document.getElementById('sfm').value);
     const totalSaleVal = parseFloat(document.getElementById('totalSale').value);
-    const serviceInputs = document.querySelectorAll('.service-input');
 
-    // SFM rate display
+    // ── SFM rate badge ──
     const rateDisplay = document.getElementById('rateDisplay');
     if (!isNaN(sfmVal) && sfmVal >= 0) {
       const { rate, tierIndex, label } = getInvoiceRate(sfmVal);
@@ -683,7 +826,6 @@
       highlightTier(null);
     }
 
-    // Need at least SFM and total sale
     const hasData = !isNaN(sfmVal) && sfmVal >= 0 && !isNaN(totalSaleVal) && totalSaleVal >= 0;
 
     if (!hasData) {
@@ -692,29 +834,68 @@
       return;
     }
 
-    const { rate, tierIndex, label } = getInvoiceRate(sfmVal);
+    // ── Invoice commission ──
+    const { rate, tierIndex } = getInvoiceRate(sfmVal);
     const invoiceComm = totalSaleVal * (rate / 100);
 
-    // Services total
+    // ── Services total ──
     let totalServices = 0;
-    serviceInputs.forEach(inp => {
+    document.querySelectorAll('.service-input').forEach(inp => {
       const v = parseFloat(inp.value);
       if (!isNaN(v) && v > 0) totalServices += v;
     });
     const servicesComm = totalServices * (SERVICES_RATE / 100);
-    const grandTotal = invoiceComm + servicesComm;
 
-    // Populate results
-    document.getElementById('r-totalSale').textContent = fmt(totalSaleVal);
-    document.getElementById('r-invRate').textContent = fmtPct(rate);
-    document.getElementById('r-invComm').textContent = fmt(invoiceComm);
+    // ── SPIVs ──
+    const spivRows = document.querySelectorAll('#spivList .spiv-row');
+    let spivTotal = 0;
+    const spivItems = [];
+
+    spivRows.forEach(row => {
+      const descEl   = row.querySelector('.spiv-desc');
+      const amountEl = row.querySelector('.spiv-amount');
+      const desc   = descEl   ? descEl.value.trim()          : '';
+      const amount = amountEl ? parseFloat(amountEl.value)   : NaN;
+      if (!isNaN(amount) && amount > 0) {
+        spivTotal += amount;
+        spivItems.push({ desc: desc || 'SPIV', amount });
+      }
+    });
+
+    // ── Grand total ──
+    const grandTotal = invoiceComm + servicesComm + spivTotal;
+
+    // ── Populate results ──
+    document.getElementById('r-totalSale').textContent    = fmt(totalSaleVal);
+    document.getElementById('r-invRate').textContent      = fmtPct(rate);
+    document.getElementById('r-invComm').textContent      = fmt(invoiceComm);
     document.getElementById('r-totalServices').textContent = fmt(totalServices);
-    document.getElementById('r-svcRate').textContent = fmtPct(SERVICES_RATE);
-    document.getElementById('r-svcComm').textContent = fmt(servicesComm);
-    document.getElementById('r-total').textContent = fmt(grandTotal);
+    document.getElementById('r-svcRate').textContent      = fmtPct(SERVICES_RATE);
+    document.getElementById('r-svcComm').textContent      = fmt(servicesComm);
+    document.getElementById('r-total').textContent        = fmt(grandTotal);
 
-    document.getElementById('placeholder').style.display = 'none';
+    // ── SPIVs in results ──
+    const spivSection = document.getElementById('spivResultSection');
+    const spivItems$  = document.getElementById('spivResultItems');
+    if (spivItems.length > 0) {
+      spivItems$.innerHTML = spivItems.map(s =>
+        `<div class="spiv-item-row">
+          <div class="spiv-item-label">${escHtml(s.desc)}</div>
+          <div class="spiv-item-value">${fmt(s.amount)}</div>
+        </div>`
+      ).join('');
+      document.getElementById('r-spivTotal').textContent = fmt(spivTotal);
+      spivSection.style.display = '';
+    } else {
+      spivSection.style.display = 'none';
+    }
+
+    document.getElementById('placeholder').style.display   = 'none';
     document.getElementById('resultsContent').style.display = '';
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 </script>
 </body>
