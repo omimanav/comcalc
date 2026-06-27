@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Commission Calculator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #E4E8EF;
+    --surface: #E4E8EF;
+    --shadow-light: #FFFFFF;
+    --shadow-dark: #B8BEC9;
+    --accent: #5B7FA6;
+    --accent-glow: rgba(91, 127, 166, 0.18);
+    --accent-light: #7BA3CC;
+    --text-primary: #3A4A5C;
+    --text-secondary: #6B7A8E;
+    --text-muted: #9AA3AE;
+    --success: #4A8C6E;
+    --success-bg: rgba(74, 140, 110, 0.1);
+    --danger: #B85C5C;
+    --radius-sm: 12px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --neu-raised: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
+    --neu-inset: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+    --neu-raised-sm: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+  }
+
+  html, body {
+    min-height: 100%;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+    color: var(--text-primary);
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    padding: 0 0 100px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 430px;
+    padding: 0 20px;
+  }
+
+  /* Header */
+  .header {
+    padding: 48px 0 28px;
+    text-align: center;
+  }
+
+  .header-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: var(--bg);
+    box-shadow: var(--neu-raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 26px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+  }
+
+  .header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.2px;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 24px 0 12px 4px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--neu-raised);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* Input group */
+  .input-group {
+    margin-bottom: 16px;
+  }
+
+  .input-group:last-child { margin-bottom: 0; }
+
+  .input-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: block;
+    letter-spacing: 0.3px;
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-prefix {
+    position: absolute;
+    left: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
+
+  .input-suffix {
+    position: absolute;
+    right: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    padding: 14px 40px 14px 16px;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--surface);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--neu-inset);
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    transition: box-shadow 0.2s ease;
+  }
+
+  input[type="number"]:focus {
+    box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light), 0 0 0 2px var(--accent);
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  input.has-prefix { padding-left: 28px; }
+  input.has-suffix { padding-right: 32px; }
+
+  /* Services rows */
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .service-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .service-row .input-wrap {
+    flex: 1;
+  }
+
+  .service-row input[type="number"] {
+    padding: 12px 32px 12px 28px;
+    font-size: 15px;
+  }
+
+  .remove-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: var(--surface);
+    box-shadow: var(--neu-raised-sm);
+    color: var(--danger);
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.15s ease;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .remove-btn:active {
+    box-shadow: var(--neu-inset);
+  }
+
+  /* Add button */
+  .add-btn {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--neu-raised-sm);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: box-shadow 0.15s ease, color 0.15s ease;
+    margin-top: 12px;
+  }
+
+  .add-btn:active {
+    box-shadow: var(--neu-inset);
+  }
+
+  .add-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Commission rate badge */
+  .rate-display {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--neu-inset);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+
+  .rate-display-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .rate-display-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .rate-tier-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent-glow);
+    color: var(--accent);
+  }
+
+  /* Results */
+  .results-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--neu-raised);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .results-card .section-label {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .result-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .result-row:first-child { padding-top: 0; }
+
+  .result-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    flex: 1;
+    padding-right: 12px;
+    line-height: 1.4;
+  }
+
+  .result-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .result-value.accent { color: var(--accent); }
+  .result-value.success { color: var(--success); }
+
+  .result-divider {
+    height: 1px;
+    background: var(--shadow-dark);
+    margin: 4px 0;
+    opacity: 0.3;
+  }
+
+  /* Total row */
+  .total-row {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--neu-inset);
+    padding: 16px;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .total-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .total-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--success);
+    letter-spacing: -1px;
+  }
+
+  /* Tier table */
+  .tier-table-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--neu-raised);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .tier-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .tier-table th {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding-bottom: 10px;
+  }
+
+  .tier-table th:not(:first-child) { text-align: right; }
+
+  .tier-table td {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 8px 0;
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .tier-table td:not(:first-child) {
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tier-table tr.active-tier td {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .tier-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 28px 0 12px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .empty-state .empty-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+  }
+
+  /* Accordion toggle */
+  .tier-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .tier-toggle-arrow {
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+  }
+
+  .tier-toggle-arrow.open { transform: rotate(180deg); }
+
+  .tier-table-wrap {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease, margin-top 0.3s ease;
+    margin-top: 0;
+  }
+
+  .tier-table-wrap.open {
+    max-height: 300px;
+    margin-top: 14px;
+  }
+
+  /* Placeholder text */
+  .placeholder-result {
+    text-align: center;
+    padding: 24px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-icon">💼</div>
+    <h1>Commission Calculator</h1>
+    <p>Sales &amp; Services Commission</p>
+  </div>
+
+  <!-- SFM Input -->
+  <p class="section-label">SFM Percentage</p>
+  <div class="card">
+    <div class="input-group">
+      <label class="input-label">SFM % by Invoice (excl. GST)</label>
+      <div class="input-wrap">
+        <input type="number" id="sfm" class="has-suffix" placeholder="0.00" min="0" max="100" step="0.01" oninput="calculate()">
+        <span class="input-suffix">%</span>
+      </div>
+    </div>
+    <div class="rate-display" id="rateDisplay" style="display:none">
+      <div>
+        <div class="rate-display-label">Invoice Commission Rate</div>
+        <div class="rate-display-value" id="rateValue">—</div>
+      </div>
+      <div id="tierBadge" class="rate-tier-badge"></div>
+    </div>
+  </div>
+
+  <!-- Total Sale Value -->
+  <p class="section-label">Total Sale Value</p>
+  <div class="card">
+    <div class="input-group">
+      <label class="input-label">Total Invoice Value (excl. GST)</label>
+      <div class="input-wrap">
+        <span class="input-prefix">$</span>
+        <input type="number" id="totalSale" class="has-prefix has-suffix" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Services Inputs -->
+  <p class="section-label">Services SKU Values</p>
+  <div class="card">
+    <div class="services-list" id="servicesList">
+      <div class="service-row" data-index="0">
+        <div class="input-wrap">
+          <span class="input-prefix">$</span>
+          <input type="number" class="service-input has-prefix" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
+        </div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addService()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
+      </svg>
+      Add Another Service SKU
+    </button>
+  </div>
+
+  <!-- Results -->
+  <p class="section-label">Commission Breakdown</p>
+  <div class="results-card" id="resultsCard">
+    <div class="placeholder-result" id="placeholder">
+      <div style="font-size:28px;margin-bottom:8px;opacity:0.4">📊</div>
+      Enter values above to calculate commission
+    </div>
+    <div id="resultsContent" style="display:none">
+      <div class="result-row">
+        <div class="result-label">Total Invoice Value</div>
+        <div class="result-value" id="r-totalSale">—</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Invoice Commission Rate</div>
+        <div class="result-value accent" id="r-invRate">—</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Invoice Commission</div>
+        <div class="result-value accent" id="r-invComm">—</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Total Services SKU Value</div>
+        <div class="result-value" id="r-totalServices">—</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Services Commission Rate</div>
+        <div class="result-value" id="r-svcRate">6.00%</div>
+      </div>
+      <div class="result-row">
+        <div class="result-label">Services Commission</div>
+        <div class="result-value success" id="r-svcComm">—</div>
+      </div>
+      <div class="total-row">
+        <div class="total-label">Total Commission</div>
+        <div class="total-value" id="r-total">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier Reference -->
+  <p class="section-label">Commission Tiers</p>
+  <div class="tier-table-card">
+    <div class="tier-toggle" onclick="toggleTiers(this)">
+      <span style="font-size:13px;font-weight:600;color:var(--text-secondary)">View Rate Schedule</span>
+      <span class="tier-toggle-arrow">▼</span>
+    </div>
+    <div class="tier-table-wrap" id="tierTableWrap">
+      <table class="tier-table" id="tierTable">
+        <thead>
+          <tr>
+            <th>SFM Range</th>
+            <th>Inv. Rate</th>
+            <th>Svc. Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-tier="0"><td>≤ 5.00%</td><td>0.10%</td><td>6.00%</td></tr>
+          <tr data-tier="1"><td>5.00% – 7.99%</td><td>0.25%</td><td>6.00%</td></tr>
+          <tr data-tier="2"><td>8.00% – 11.99%</td><td>0.35%</td><td>6.00%</td></tr>
+          <tr data-tier="3"><td>12.00% – 17.99%</td><td>0.55%</td><td>6.00%</td></tr>
+          <tr data-tier="4"><td>≥ 18.00%</td><td>1.00%</td><td>6.00%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const TIERS = [
+    { max: 5,    rate: 0.10, label: '≤5%' },
+    { max: 7.99, rate: 0.25, label: '5–7.99%' },
+    { max: 11.99, rate: 0.35, label: '8–11.99%' },
+    { max: 17.99, rate: 0.55, label: '12–17.99%' },
+    { max: Infinity, rate: 1.00, label: '≥18%' },
+  ];
+  const SERVICES_RATE = 6.0;
+
+  function getInvoiceRate(sfm) {
+    for (let i = 0; i < TIERS.length; i++) {
+      if (sfm <= TIERS[i].max) return { rate: TIERS[i].rate, tierIndex: i, label: TIERS[i].label };
+    }
+    return { rate: 1.00, tierIndex: 4, label: '≥18%' };
+  }
+
+  function fmt(n) {
+    return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function fmtPct(n) {
+    return n.toFixed(2) + '%';
+  }
+
+  let serviceCount = 1;
+
+  function addService() {
+    const list = document.getElementById('servicesList');
+    const idx = serviceCount++;
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.dataset.index = idx;
+    row.innerHTML = `
+      <div class="input-wrap">
+        <span class="input-prefix">$</span>
+        <input type="number" class="service-input has-prefix" placeholder="0.00" min="0" step="0.01" oninput="calculate()">
+      </div>
+      <button class="remove-btn" onclick="removeService(this)" title="Remove">−</button>
+    `;
+    list.appendChild(row);
+    row.querySelector('input').focus();
+    calculate();
+  }
+
+  function removeService(btn) {
+    btn.closest('.service-row').remove();
+    calculate();
+  }
+
+  function toggleTiers(el) {
+    const wrap = document.getElementById('tierTableWrap');
+    const arrow = el.querySelector('.tier-toggle-arrow');
+    wrap.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  function highlightTier(tierIndex) {
+    document.querySelectorAll('#tierTable tbody tr').forEach(tr => {
+      tr.classList.remove('active-tier');
+      const dot = tr.querySelector('.tier-dot');
+      if (dot) dot.remove();
+    });
+    if (tierIndex !== null) {
+      const activeRow = document.querySelector(`#tierTable tbody tr[data-tier="${tierIndex}"]`);
+      if (activeRow) {
+        activeRow.classList.add('active-tier');
+        const firstTd = activeRow.querySelector('td');
+        firstTd.innerHTML = `<span class="tier-dot"></span>` + firstTd.textContent;
+      }
+    }
+  }
+
+  function calculate() {
+    const sfmVal = parseFloat(document.getElementById('sfm').value);
+    const totalSaleVal = parseFloat(document.getElementById('totalSale').value);
+    const serviceInputs = document.querySelectorAll('.service-input');
+
+    // SFM rate display
+    const rateDisplay = document.getElementById('rateDisplay');
+    if (!isNaN(sfmVal) && sfmVal >= 0) {
+      const { rate, tierIndex, label } = getInvoiceRate(sfmVal);
+      document.getElementById('rateValue').textContent = fmtPct(rate);
+      document.getElementById('tierBadge').textContent = label;
+      rateDisplay.style.display = 'flex';
+      highlightTier(tierIndex);
+    } else {
+      rateDisplay.style.display = 'none';
+      highlightTier(null);
+    }
+
+    // Need at least SFM and total sale
+    const hasData = !isNaN(sfmVal) && sfmVal >= 0 && !isNaN(totalSaleVal) && totalSaleVal >= 0;
+
+    if (!hasData) {
+      document.getElementById('placeholder').style.display = '';
+      document.getElementById('resultsContent').style.display = 'none';
+      return;
+    }
+
+    const { rate, tierIndex, label } = getInvoiceRate(sfmVal);
+    const invoiceComm = totalSaleVal * (rate / 100);
+
+    // Services total
+    let totalServices = 0;
+    serviceInputs.forEach(inp => {
+      const v = parseFloat(inp.value);
+      if (!isNaN(v) && v > 0) totalServices += v;
+    });
+    const servicesComm = totalServices * (SERVICES_RATE / 100);
+    const grandTotal = invoiceComm + servicesComm;
+
+    // Populate results
+    document.getElementById('r-totalSale').textContent = fmt(totalSaleVal);
+    document.getElementById('r-invRate').textContent = fmtPct(rate);
+    document.getElementById('r-invComm').textContent = fmt(invoiceComm);
+    document.getElementById('r-totalServices').textContent = fmt(totalServices);
+    document.getElementById('r-svcRate').textContent = fmtPct(SERVICES_RATE);
+    document.getElementById('r-svcComm').textContent = fmt(servicesComm);
+    document.getElementById('r-total').textContent = fmt(grandTotal);
+
+    document.getElementById('placeholder').style.display = 'none';
+    document.getElementById('resultsContent').style.display = '';
+  }
+</script>
+</body>
+</html>
